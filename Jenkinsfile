@@ -11,7 +11,7 @@ pipeline {
         DOCKERHUB_NAME = 'pralay1993'
         DOCKER_CREDENTIALS_ID = 'pralay_doc_cred'
         DEPLOY_USER = 'root'
-        DEPLOY_PATH = '~/deploy_path'
+        DEPLOY_PATH = '~/'
         DEPLOY_SERVER = '37.60.254.21'
         SSH_CREDENTIALS_ID = 'ssh_key_server_2'
         COMPOSE_FILE_PATH = './docker-compose.yaml'
@@ -41,7 +41,7 @@ pipeline {
                     
                     sh """
                         sshpass -p ${env.DEPLOY_PASSWORD} ssh ${env.DEPLOY_USER}@${env.DEPLOY_SERVER} << EOF
-                            cd ${env.DEPLOY_PATH}
+                            // cd ${env.DEPLOY_PATH}
                             docker-compose pull  # Pull the latest image from Docker Hub
                             docker-compose up -d --remove-orphans  # Deploy using docker-compose
                         EOF
