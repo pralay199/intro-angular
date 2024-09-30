@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  app:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    image: ${DOCKERHUB_NAME}/${DOCKER_IMAGE}:${IMAGE_VERSION}
+    container_name: ${DOCKER_IMAGE}_container
+    ports:
+      - "4200:80"
+
+
+ 
