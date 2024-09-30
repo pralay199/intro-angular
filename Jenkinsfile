@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        sshpass -p ${env.DEPLOY_PASSWORD} scp ${env.COMPOSE_FILE_PATH} ${env.DEPLOY_USER}@${env.DEPLOY_SERVER}:${env.DEPLOY_PATH}/docker-compose.yml
+                        sshpass -p ${env.DEPLOY_PASSWORD} scp ${env.COMPOSE_FILE_PATH} ${env.DEPLOY_USER}@${env.DEPLOY_SERVER}:${env.DEPLOY_PATH}/docker-compose.yaml
                     """
                     
                     sh """
