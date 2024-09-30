@@ -11,7 +11,7 @@ pipeline {
         DOCKERHUB_NAME = 'pralay1993'
         DOCKER_CREDENTIALS_ID = 'pralay_doc_cred'
         DEPLOY_USER = 'root'
-        DEPLOY_PATH = '~/'
+        DEPLOY_PATH = '~/deploy_path'
         DEPLOY_SERVER = '37.60.254.21'
         SSH_CREDENTIALS_ID = 'ssh_key_server_2'
         COMPOSE_FILE_PATH = './docker-compose.yaml'
@@ -35,19 +35,26 @@ pipeline {
         stage('Deploy to Remote Server with Docker Compose') {
             steps {
                 script {
+                    // Create the deploy_path directory if it doesn't exist
                     sh """
-                        sshpass -p ${env.DEPLOY_PASSWORD} scp ${env.COMPOSE_FILE_PATH} ${env.DEPLOY_USER}@${env.DEPLOY_SERVER}:${env.DEPLOY_PATH}/docker-compose.yaml
+                        sshpass -p ${env.DEPLOY_PASSWORD} ssh ${env.DEPLOY_USER}@${env.DEPLOY_SERVER} 'mkdir -p ${env.DEPLOY_PATH}'
                     """
                     
+                    // Copy the docker-compose.yaml file
+                    sh """
+                        sshpass -p ${env.DEPLOY_PASSWORD} scp ${env.COMPOSE_FILE_PATH} ${env.DEPLOY_USER}@${env.DEPLOY_SERVER}:${env.DEPLOY_PATH}/docker-compose.yml
+                    """
+                    
+                    // Run Docker Compose commands on the remote server
                     sh """
                         sshpass -p ${env.DEPLOY_PASSWORD} ssh ${env.DEPLOY_USER}@${env.DEPLOY_SERVER} << EOF
-                            // cd ${env.DEPLOY_PATH}
                             export DOCKERHUB_NAME=${env.DOCKERHUB_NAME}
                             export DOCKER_IMAGE=${env.DOCKER_IMAGE}
                             export IMAGE_VERSION=${env.IMAGE_VERSION}
+                            cd ${env.DEPLOY_PATH}
                             docker-compose pull  # Pull the latest image from Docker Hub
-                            docker-compose up -d  # Deploy using docker-compose
-                        EOF
+                            docker-compose up -d --remove-orphans  # Deploy using docker-compose
+EOF
                     """
                 }
             }
