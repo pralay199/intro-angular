@@ -36,25 +36,27 @@ pipeline {
 
         
 
-        stage('Deploy to Remote Server') {
+        stage('Deploy to Remote Server with Docker Compose') {
             steps {
                 script {
                     sshagent([env.SSH_CREDENTIALS_ID]) {
-                        // SSH into the remote server, pull the Docker image, and run it
+                        // Transfer Docker Compose file to remote server
                         sh """
-                            ssh -vvv ${env.DEPLOY_USER}@${env.DEPLOY_SERVER} << EOF
-                                docker login -u ${env.DOCKERHUB_NAME} -p ${env.DOCKER_PASSWORD}
-                                docker pull ${env.DOCKERHUB_NAME}/${env.DOCKER_IMAGE}:${env.IMAGE_VERSION}
-                                docker stop ${env.DOCKER_IMAGE} || true
-                                docker rm ${env.DOCKER_IMAGE} || true
-                                docker run -d --name ${env.DOCKER_IMAGE} ${env.DOCKERHUB_NAME}/${env.DOCKER_IMAGE}:${env.IMAGE_VERSION}
-                                docker logout
+                            scp ./docker-compose.yaml ${env.DEPLOY_USER}@${env.DEPLOY_SERVER}:${env.DEPLOY_PATH}/docker-compose.yml
+                        """
+
+                        // SSH into the remote server and deploy using Docker Compose
+                        sh """
+                            ssh ${env.DEPLOY_USER}@${env.DEPLOY_SERVER} << EOF
+                                cd ${env.DEPLOY_PATH}
+                                docker-compose pull  # Pull the updated image from Docker Hub
+                                docker-compose up -d --remove-orphans  # Deploy the updated image
                             EOF
                         """
                     }
                 }
             }
-        }
+        }            
     }
 
     post {
