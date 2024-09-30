@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'my-label' }  // Specify the agent or node with the label 'my-label'
+    agent { label 'my_server_1' }  // Specify the agent or node with the label 'my-label'
 
     parameters {
         string(name: 'version', defaultValue: 'v1', description: 'DOCKER IMAGE VERSION')  // String parameter
