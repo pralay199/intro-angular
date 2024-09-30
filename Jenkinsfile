@@ -42,6 +42,9 @@ pipeline {
                     sh """
                         sshpass -p ${env.DEPLOY_PASSWORD} ssh ${env.DEPLOY_USER}@${env.DEPLOY_SERVER} << EOF
                             // cd ${env.DEPLOY_PATH}
+                            export DOCKERHUB_NAME=${env.DOCKERHUB_NAME}
+                            export DOCKER_IMAGE=${env.DOCKER_IMAGE}
+                            export IMAGE_VERSION=${env.IMAGE_VERSION}
                             docker-compose pull  # Pull the latest image from Docker Hub
                             docker-compose up -d --remove-orphans  # Deploy using docker-compose
                         EOF
