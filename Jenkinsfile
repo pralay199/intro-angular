@@ -46,7 +46,7 @@ pipeline {
                             export DOCKER_IMAGE=${env.DOCKER_IMAGE}
                             export IMAGE_VERSION=${env.IMAGE_VERSION}
                             docker-compose pull  # Pull the latest image from Docker Hub
-                            docker-compose up -d --remove-orphans  # Deploy using docker-compose
+                            docker-compose up -d  # Deploy using docker-compose
                         EOF
                     """
                 }
