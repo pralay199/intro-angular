@@ -6,15 +6,15 @@ pipeline {
     }
 
     environment {
-        APP_ENV = 'production'  // Define environment variables
         DOCKER_IMAGE = 'intro'
         IMAGE_VERSION = "${params.version}"
-        DEPLOY_PATH = '~/'
         DOCKERHUB_NAME = 'pralay1993'
         DOCKER_CREDENTIALS_ID = 'pralay_doc_cred'
         DEPLOY_USER = 'root'
+        DEPLOY_PATH = '~/deploy_path'
         DEPLOY_SERVER = '37.60.254.21'
         SSH_CREDENTIALS_ID ='ssh_key_server_2'
+        COMPOSE_FILE_PATH = './docker-compose.yaml'        
 
     }
 
@@ -42,15 +42,15 @@ pipeline {
                     sshagent([env.SSH_CREDENTIALS_ID]) {
                         // Transfer Docker Compose file to remote server
                         sh """
-                            scp ./docker-compose.yaml ${env.DEPLOY_USER}@${env.DEPLOY_SERVER}:${env.DEPLOY_PATH}/docker-compose.yml
+                            scp ${env.COMPOSE_FILE_PATH} ${env.DEPLOY_USER}@${env.DEPLOY_SERVER}:${env.DEPLOY_PATH}/docker-compose.yml
                         """
 
                         // SSH into the remote server and deploy using Docker Compose
                         sh """
                             ssh ${env.DEPLOY_USER}@${env.DEPLOY_SERVER} << EOF
                                 cd ${env.DEPLOY_PATH}
-                                docker-compose pull  # Pull the updated image from Docker Hub
-                                docker-compose up -d --remove-orphans  # Deploy the updated image
+                                docker-compose pull  # Pull the latest image from Docker Hub
+                                docker-compose up -d --remove-orphans  # Deploy using docker-compose
                             EOF
                         """
                     }
