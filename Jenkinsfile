@@ -42,7 +42,7 @@ pipeline {
                     sshagent([env.SSH_CREDENTIALS_ID]) {
                         // SSH into the remote server, pull the Docker image, and run it
                         sh """
-                            ssh ${env.DEPLOY_USER}@${env.DEPLOY_SERVER} << EOF
+                            ssh -vvv ${env.DEPLOY_USER}@${env.DEPLOY_SERVER} << EOF
                                 docker login -u ${env.DOCKERHUB_NAME} -p ${env.DOCKER_PASSWORD}
                                 docker pull ${env.DOCKERHUB_NAME}/${env.DOCKER_IMAGE}:${env.IMAGE_VERSION}
                                 docker stop ${env.DOCKER_IMAGE} || true
