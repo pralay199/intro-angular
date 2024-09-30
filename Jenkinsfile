@@ -13,7 +13,7 @@ pipeline {
         DEPLOY_USER = 'root'
         DEPLOY_PATH = '~/'
         DEPLOY_SERVER = '37.60.254.21'
-        SSH_CREDENTIALS_ID = 'ssh_key_server_2'
+        // SSH_CREDENTIALS_ID = 'ssh_key_server_2'
         COMPOSE_FILE_PATH = './docker-compose.yaml'
         DEPLOY_PASSWORD = 'rakesh123'
     }
